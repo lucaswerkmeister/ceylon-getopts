@@ -15,6 +15,13 @@ Those of a naturally forgiving disposition might also find it within themselves 
 “<strong>s</strong>mall G<strong>N</strong>U-style <strong>opt</strong>ion<strong>s</strong>”
 (even though the G in “GNU” isn’t actually silent).
 
+License
+-------
+
+The content of this repository is released under the ASL v2.0 as provided in the LICENSE file that accompanied this code.
+
+By submitting a "pull request" or otherwise contributing to this repository, you agree to license your contribution under the license mentioned above.
+
 
 [Snoo]: https://www.reddit.com/wiki/faq#wiki_what_is_that_alien_.2F_bug_thing.3F
 [getopts]: http://pubs.opengroup.org/onlinepubs/9699919799/utilities/getopts.html
