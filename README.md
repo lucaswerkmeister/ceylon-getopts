@@ -1,4 +1,4 @@
-ceylon-getopts
-==============
+Snopts
+======
 
-(What may later become) a tiny Ceylon library to parse command line options
+**Snopts** is a command line option parsing library for Ceylon.
