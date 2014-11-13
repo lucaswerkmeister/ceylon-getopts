@@ -20,25 +20,21 @@
     
     <typedef resource="com/redhat/ceylon/ant/antlib.xml" classpathref="ant-tasks"/>
     
-    <reposet id="reposet.compile.source">
+    <reposet id="reposet.default">
         <repo url="${out.repo}"/>
     </reposet>
 
-    <reposet id="reposet.compile.test">
-        <repo url="${out.repo}"/>
-    </reposet>
-    
-    <reposet id="reposet.run.test">
-        <reposet refid="reposet.compile.test"/>
-        <repo url="${out.repo}"/>
-    </reposet>
-    
     <moduleset id="modules.source">
         <module name="herd.snopts"/>
     </moduleset>
     
     <moduleset id="modules.test">
         <module name="test.herd.snopts"/>
+    </moduleset>
+
+    <moduleset id="modules.snopts">
+        <moduleset refid="modules.source"/>
+        <moduleset refid="modules.test"/>
     </moduleset>
     
     <target name="clean"
@@ -62,7 +58,8 @@
     </path>
     
     <property name="test-sources" refid="test-sources-path"/>
-    
+
+    <!-- Compiling both modules in one go is faster than depending on compile-source,compile-test -->
     <target name="compile-test"
         description="Compiles the test module" >
         <ceylon-compile executable="${ceylon.executable}"
@@ -70,15 +67,26 @@
             out="${out.repo}"
             verbose="${ceylon.verbosity}"
             encoding="UTF-8">
-            <reposet refid="reposet.compile.test"/> 
+            <reposet refid="reposet.default"/> 
             <moduleset refid="modules.test"/>
         </ceylon-compile>
     </target>
 
-    <target name="test" depends="compile-source,compile-test"
+    <target name="compile"
+        description="Compiles the Snopts and test modules">
+        <ceylon-compile executable="${ceylon.executable}"
+            src="${test-sources}"
+            out="${out.repo}"
+            verbose="${ceylon.verbosity}"
+            encoding="UTF-8">
+            <moduleset refid="modules.snopts"/>
+        </ceylon-compile>
+    </target>
+
+    <target name="test" depends="compile"
         description="Runs the compiled test module">
         <ceylon-test>
-            <reposet refid="reposet.run.test"/>
+            <reposet refid="reposet.default"/>
             <moduleset refid="modules.test"/>
         </ceylon-test>
     </target>
