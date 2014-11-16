@@ -2,7 +2,7 @@ import ceylon.collection {
     LinkedList
 }
 
-Argument[] parseArguments(Option[] options, String[] input) {
+shared Argument[] parseArguments(Option[] options, String[] input) {
     value arguments = LinkedList<Argument>();
     variable Integer i = 0;
     while (exists argument = input[i]) {
