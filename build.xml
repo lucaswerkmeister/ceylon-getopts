@@ -144,7 +144,7 @@
 
     <target name="format"
             description="formats the source code">
-        <ceylon-run module="ceylon.formatter">
+        <ceylon-run module="ceylon.formatter/1.1.0">
             <arg value="source"/>
         </ceylon-run>
     </target>
