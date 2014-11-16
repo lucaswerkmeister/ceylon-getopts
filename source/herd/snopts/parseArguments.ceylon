@@ -16,8 +16,8 @@ shared Argument[] parseArguments(Option[] options, String[] input) {
                     break;
                 } else {
                     if (exists splitIndex = nameAndArg.firstIndexWhere('='.equals)) {
-                        value name = nameAndArg[... splitIndex-1];
-                        value arg = nameAndArg[splitIndex+1 ...];
+                        value name = nameAndArg[... splitIndex - 1];
+                        value arg = nameAndArg[splitIndex + 1 ...];
                         assert (is Parameter option = options.find((Option option) => option.name == name));
                         arguments.add(ParameterArgument(option, arg));
                     } else {

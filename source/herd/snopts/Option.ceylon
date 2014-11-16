@@ -34,7 +34,7 @@ shared abstract class Option(name, shortForm)
      by its [[long form|name]]."
     shared Character? shortForm;
     
-    shared actual Integer hash => name.hash + 31*(shortForm?.hash else 0);
+    shared actual Integer hash => name.hash + 31 * (shortForm?.hash else 0);
 }
 
 "A flag option, which can either be present or absent."
