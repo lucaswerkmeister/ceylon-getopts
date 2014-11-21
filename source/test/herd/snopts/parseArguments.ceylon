@@ -146,6 +146,19 @@ shared class ParseArguments() {
     }
     
     test
+    shared void shortParametersGroup() {
+        doTest {
+            expected = [
+                FlagArgument(verboseFlag),
+                ParameterArgument(maxCountParameter, "42")
+            ];
+            arguments = [
+                "-" + (verboseFlag.shortForm?.string else "") + (maxCountParameter.shortForm?.string else "") + "42"
+            ];
+        };
+    }
+    
+    test
     shared void combined() {
         doTest {
             expected = [
