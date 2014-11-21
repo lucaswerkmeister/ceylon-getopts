@@ -2,8 +2,9 @@ import ceylon.collection {
     LinkedList
 }
 
-shared Argument[] parseArguments(Option[] options, String[] input) {
+shared Arguments parseArguments(Option[] options, String[] input) {
     value arguments = LinkedList<Argument>();
+    value errors = LinkedList<Error>();
     variable Integer i = 0;
     while (exists argument = input[i]) {
         i++;
@@ -18,8 +19,11 @@ shared Argument[] parseArguments(Option[] options, String[] input) {
                     if (exists splitIndex = nameAndArg.firstIndexWhere('='.equals)) {
                         value name = nameAndArg[... splitIndex - 1];
                         value arg = nameAndArg[splitIndex + 1 ...];
-                        assert (is Parameter option = options.find((Option option) => option.name == name));
-                        arguments.add(ParameterArgument(option, arg));
+                        value option = options.find((Option option) => option.name == name);
+                        switch (option)
+                        case (is Parameter) { arguments.add(ParameterArgument(option, arg)); }
+                        case (is Flag) { errors.add(FlagWithArgumentError(option, arg)); }
+                        case (null) { errors.add(UnknownLongOptionError(name)); }
                     } else {
                         value name = nameAndArg;
                         value option = options.find((Option option) => option.name == name);
@@ -33,7 +37,7 @@ shared Argument[] parseArguments(Option[] options, String[] input) {
                                 i++;
                                 arguments.add(ParameterArgument(option, arg));
                             } else {
-                                throw AssertionError("Missing argument for parameter ‘``option.name``’");
+                                errors.add(ParameterWithoutArgumentError(option));
                             }
                         }
                         case (null) {
@@ -44,24 +48,33 @@ shared Argument[] parseArguments(Option[] options, String[] input) {
             } else {
                 value flags = argument[1...];
                 for (char in flags.reversed.rest.reversed) {
-                    assert (is Flag flag = options.find((Option option) => (option.shortForm else '\{NULL}') == char));
-                    arguments.add(FlagArgument(flag));
+                    value option = options.find((Option option) => (option.shortForm else '\{NULL}') == char);
+                    switch (option)
+                    case (is Flag) { arguments.add(FlagArgument(option)); }
+                    case (is Parameter) { errors.add(ParameterInShorthandListError(option)); }
+                    case (null) { errors.add(UnknownShortOptionError(char)); }
                 }
                 assert (exists lastChar = flags.last);
-                assert (exists option = options.find((Option option) => (option.shortForm else '\{NULL}') == lastChar));
+                value option = options.find((Option option) => (option.shortForm else '\{NULL}') == lastChar);
                 switch (option)
                 case (is Flag) {
                     arguments.add(FlagArgument(option));
                 }
                 case (is Parameter) {
-                    assert (exists arg = input[i]);
-                    i++;
-                    arguments.add(ParameterArgument(option, arg));
+                    if (exists arg = input[i]) {
+                        i++;
+                        arguments.add(ParameterArgument(option, arg));
+                    } else {
+                        errors.add(ParameterWithoutArgumentError(option));
+                    }
+                }
+                case (null) {
+                    errors.add(UnknownShortOptionError(lastChar));
                 }
             }
         } else {
             arguments.add(FreeArgument(argument));
         }
     }
-    return arguments.sequence();
+    return Arguments(arguments.sequence(), errors.sequence());
 }
