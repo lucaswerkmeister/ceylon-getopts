@@ -1,6 +1,6 @@
 "An error that occurred during argument parsing."
 shared abstract class Error()
-        of FlagWithArgumentError | ParameterWithoutArgumentError | ParameterInShorthandListError | UnknownOptionError {
+        of FlagWithArgumentError | ParameterWithoutArgumentError | UnknownOptionError {
     "An error message, suitable for printing
      to the standard error stream."
     shared actual formal String string;
@@ -19,15 +19,6 @@ shared class FlagWithArgumentError(flag, argument) extends Error() {
 
 "A parameter was not given an argument."
 shared class ParameterWithoutArgumentError(parameter) extends Error() {
-    
-    "The parameter."
-    shared Parameter parameter;
-    
-    string => "option '--``parameter.name``' requires an argument";
-}
-
-"A parameter appeared within a shorthand flag list (`-abcde`)."
-shared class ParameterInShorthandListError(parameter) extends Error() {
     
     "The parameter."
     shared Parameter parameter;

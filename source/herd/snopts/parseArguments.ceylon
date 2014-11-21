@@ -46,30 +46,28 @@ shared Arguments parseArguments(Option[] options, String[] input) {
                     }
                 }
             } else {
-                value flags = argument[1...];
-                for (char in flags.reversed.rest.reversed) {
-                    value option = options.find((Option option) => (option.shortForm else '\{NULL}') == char);
+                variable String shortForms = argument;
+                while (exists shortForm = shortForms.first) {
+                    shortForms = shortForms[1...];
+                    value option = options.find((Option option) => (option.shortForm else '\{NULL}') == shortForm);
                     switch (option)
                     case (is Flag) { arguments.add(FlagArgument(option)); }
-                    case (is Parameter) { errors.add(ParameterInShorthandListError(option)); }
-                    case (null) { errors.add(UnknownShortOptionError(char)); }
-                }
-                assert (exists lastChar = flags.last);
-                value option = options.find((Option option) => (option.shortForm else '\{NULL}') == lastChar);
-                switch (option)
-                case (is Flag) {
-                    arguments.add(FlagArgument(option));
-                }
-                case (is Parameter) {
-                    if (exists arg = input[i]) {
-                        i++;
-                        arguments.add(ParameterArgument(option, arg));
-                    } else {
-                        errors.add(ParameterWithoutArgumentError(option));
+                    case (is Parameter) {
+                        if (!shortForms.empty) {
+                            // use rest of short forms as argument, e. g. `-xyzn10`
+                            arguments.add(ParameterArgument(option, shortForms));
+                        } else {
+                            // attempt to use next argument as argument, e. g. `-xyzn 10`
+                            if (exists arg = input[i]) {
+                                i++;
+                                arguments.add(ParameterArgument(option, arg));
+                            } else {
+                                errors.add(ParameterWithoutArgumentError(option));
+                            }
+                        }
+                        break;
                     }
-                }
-                case (null) {
-                    errors.add(UnknownShortOptionError(lastChar));
+                    case (null) { errors.add(UnknownShortOptionError(shortForm)); }
                 }
             }
         } else {
