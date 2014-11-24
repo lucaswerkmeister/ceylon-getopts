@@ -47,7 +47,15 @@ shared Arguments parseArguments(Option[] options, String[] input) {
                             }
                         }
                         case (null) {
-                            arguments.add(FlagArgument(Flag(name)));
+                            if (name.startsWith("no-")) {
+                                // try to interpret --no-flag as --flag=false
+                                value flagName = name[3...];
+                                if (is Flag flag = options.find((Option option) => option.name == flagName)) {
+                                    arguments.add(FlagArgument(flag, false));
+                                } else {
+                                    errors.add(UnknownLongOptionError(name));
+                                }
+                            }
                         }
                     }
                 }
