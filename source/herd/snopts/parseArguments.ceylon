@@ -22,7 +22,13 @@ shared Arguments parseArguments(Option[] options, String[] input) {
                         value option = options.find((Option option) => option.name == name);
                         switch (option)
                         case (is Parameter) { arguments.add(ParameterArgument(option, arg)); }
-                        case (is Flag) { errors.add(FlagWithArgumentError(option, arg)); }
+                        case (is Flag) {
+                            if (exists boolish = parseBoolish(arg)) {
+                                arguments.add(FlagArgument(option, boolish)); // --flag=true, --flag=off, etc.
+                            } else {
+                                errors.add(FlagWithArgumentError(option, arg));
+                            }
+                        }
                         case (null) { errors.add(UnknownLongOptionError(name)); }
                     } else {
                         value name = nameAndArg;
