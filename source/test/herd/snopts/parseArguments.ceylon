@@ -191,6 +191,18 @@ shared class ParseArguments() {
     }
     
     test
+    shared void noFlag() {
+        doTest {
+            expected = [
+                FlagArgument(helpFlag, false)
+            ];
+            arguments = [
+                "--no-``helpFlag.name``"
+            ];
+        };
+    }
+    
+    test
     shared void combined() {
         doTest {
             expected = [
