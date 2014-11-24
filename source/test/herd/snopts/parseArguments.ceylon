@@ -159,6 +159,50 @@ shared class ParseArguments() {
     }
     
     test
+    shared void flagTrue() {
+        doTest {
+            expected = [
+                FlagArgument(verboseFlag),
+                FlagArgument(helpFlag),
+                FlagArgument(versionFlag)
+            ];
+            arguments = [
+                "--``verboseFlag.name``=on",
+                "--``helpFlag.name``=yes",
+                "--``versionFlag.name``=true"
+            ];
+        };
+    }
+    
+    test
+    shared void flagFalse() {
+        doTest {
+            expected = [
+                FlagArgument(verboseFlag, false),
+                FlagArgument(helpFlag, false),
+                FlagArgument(versionFlag, false)
+            ];
+            arguments = [
+                "--``verboseFlag.name``=off",
+                "--``helpFlag.name``=no",
+                "--``versionFlag.name``=false"
+            ];
+        };
+    }
+    
+    test
+    shared void noFlag() {
+        doTest {
+            expected = [
+                FlagArgument(helpFlag, false)
+            ];
+            arguments = [
+                "--no-``helpFlag.name``"
+            ];
+        };
+    }
+    
+    test
     shared void combined() {
         doTest {
             expected = [

@@ -22,7 +22,13 @@ shared Arguments parseArguments(Option[] options, String[] input) {
                         value option = options.find((Option option) => option.name == name);
                         switch (option)
                         case (is Parameter) { arguments.add(ParameterArgument(option, arg)); }
-                        case (is Flag) { errors.add(FlagWithArgumentError(option, arg)); }
+                        case (is Flag) {
+                            if (exists boolish = parseBoolish(arg)) {
+                                arguments.add(FlagArgument(option, boolish)); // --flag=true, --flag=off, etc.
+                            } else {
+                                errors.add(FlagWithArgumentError(option, arg));
+                            }
+                        }
                         case (null) { errors.add(UnknownLongOptionError(name)); }
                     } else {
                         value name = nameAndArg;
@@ -41,7 +47,15 @@ shared Arguments parseArguments(Option[] options, String[] input) {
                             }
                         }
                         case (null) {
-                            arguments.add(FlagArgument(Flag(name)));
+                            if (name.startsWith("no-")) {
+                                // try to interpret --no-flag as --flag=false
+                                value flagName = name[3...];
+                                if (is Flag flag = options.find((Option option) => option.name == flagName)) {
+                                    arguments.add(FlagArgument(flag, false));
+                                } else {
+                                    errors.add(UnknownLongOptionError(name));
+                                }
+                            }
                         }
                     }
                 }

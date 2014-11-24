@@ -6,7 +6,8 @@ shared abstract class Error()
     shared actual formal String string;
 }
 
-"A flag was given an argument."
+"A flag was given an argument that cannot be [[interpreted|parseBoolish]]
+ as a [[Boolean]]-ish value."
 shared class FlagWithArgumentError(flag, argument) extends Error() {
     
     "The flag."
