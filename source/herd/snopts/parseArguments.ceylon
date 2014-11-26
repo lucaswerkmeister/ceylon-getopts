@@ -2,7 +2,7 @@ import ceylon.collection {
     LinkedList
 }
 
-shared Arguments parseArguments(Option[] options, String[] input) {
+shared [Argument[], Error[]] parseArguments(Option[] options, String[] input) {
     value arguments = LinkedList<Argument>();
     value errors = LinkedList<Error>();
     variable Integer i = 0;
@@ -88,5 +88,5 @@ shared Arguments parseArguments(Option[] options, String[] input) {
             arguments.add(FreeArgument(argument));
         }
     }
-    return Arguments(arguments.sequence(), errors.sequence());
+    return [arguments.sequence(), errors.sequence()];
 }

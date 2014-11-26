@@ -25,7 +25,7 @@ shared class ParseArguments() {
     void doTest(Argument[] expected, String[] arguments) {
         assertEquals {
             expected = expected;
-            actual = parseArguments(options, arguments).arguments;
+            actual = parseArguments(options, arguments)[0];
             message = " ".join(arguments);
         };
     }
