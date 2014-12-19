@@ -1,6 +1,14 @@
 "A single argument that the program received."
 shared abstract class Argument()
-        of FlagArgument | ParameterArgument | FreeArgument {}
+        of FlagArgument | ParameterArgument | FreeArgument {
+    
+    "The option to which this argument is bound,
+     or [[null]] if this is a [[free argument|FreeArgument]]."
+    shared formal Option? option;
+    
+    "The value of this argument."
+    shared formal String|Boolean argument;
+}
 
 "A flag argument, indicating the presence of a [[flag]].
  
@@ -12,9 +20,10 @@ shared class FlagArgument(flag, argument = true) extends Argument() {
     
     "The flag."
     shared Flag flag;
+    option => flag;
     
     "The boolean argument ([[true]] by default)."
-    shared Boolean argument;
+    shared actual Boolean argument;
     
     shared actual Boolean equals(Object other) {
         if (is FlagArgument other) {
@@ -37,9 +46,10 @@ shared class ParameterArgument(parameter, argument) extends Argument() {
     
     "The parameter."
     shared Parameter parameter;
+    option => parameter;
     
     "The argument to the parameter."
-    shared String argument;
+    shared actual String argument;
     
     shared actual Boolean equals(Object other) {
         if (is ParameterArgument other) {
@@ -58,8 +68,10 @@ shared class ParameterArgument(parameter, argument) extends Argument() {
 "A free argument, not bound to any [[Option]]."
 shared class FreeArgument(argument) extends Argument() {
     
+    option => null;
+    
     "The argument."
-    shared String argument;
+    shared actual String argument;
     
     shared actual Boolean equals(Object other) {
         if (is FreeArgument other) {
