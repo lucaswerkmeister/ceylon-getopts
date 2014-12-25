@@ -1,30 +1,12 @@
 import herd.snopts {
-    StreamDefaults,
-    Flag,
-    Parameter
-}
-import ceylon.test {
-    test,
-    assertEquals,
-    assertNull
+    StreamDefaults
 }
 
-test
-shared void streamDefaults() {
-    value politeFlag = Flag("polite");
-    value portParameter = Parameter("port");
-    value verboseParameter = Parameter("verbose");
-    StreamDefaults defaults = StreamDefaults {
+shared class StreamDefaultsTests() extends DefaultsTest() {
+    defaults => StreamDefaults {
         politeFlag->true,
+        floodFlag->false,
+        serverParameter->"localhost",
         portParameter->"80"
     };
-    assertEquals {
-        expected = true;
-        actual = defaults.flag(politeFlag);
-    };
-    assertEquals {
-        expected = "80";
-        actual = defaults.parameter(portParameter);
-    };
-    assertNull(defaults.parameter(verboseParameter));
 }
